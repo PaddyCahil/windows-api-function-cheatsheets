@@ -460,6 +460,8 @@ DWORD WSAWaitForMultipleEvents(
 ); // Waits for multiple event objects and returns when the specified events are signaled or the time-out interval elapses.
 ```
 
+---
+
 ## Unicode String Functions
 ```c
 #include <wchar.h> // for wide character string routines
@@ -618,6 +620,8 @@ int iswxdigit(
     wint_t c
 ); // Checks if the wide character is a valid hexadecimal digit.
 ```
+
+--- 
 
 ### Win32 Structs Cheat Sheet
 [**`SYSTEM_INFO`**](https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info)
