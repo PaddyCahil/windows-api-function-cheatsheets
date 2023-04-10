@@ -623,7 +623,8 @@ int iswxdigit(
 
 --- 
 
-### Win32 Structs Cheat Sheet
+## Win32 Structs Cheat Sheet
+### Common Structs
 [**`SYSTEM_INFO`**](https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info)
 ```cpp
 #include <sysinfoapi.h>
@@ -899,7 +900,7 @@ typedef struct fd_set {
 ```
 
 ### Win32 Sockets Structs Cheat Sheet (winsock2.h)
-[**`IN_ADDR`**][in_addr (winsock2.h) - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/ns-winsock2-in_addr)
+[**`IN_ADDR`**](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/ns-winsock2-in_addr)
 ```cpp
 // Represents an IPv4 address.
 typedef struct in_addr {
@@ -931,7 +932,7 @@ typedef struct addrinfoW {
     struct addrinfo *ai_next;
 } ADDRINFOW, *PADDRINFOW;
 ```
-[**`WSABUF`**][WSABUF (ws2def.h) - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/ws2def/ns-ws2def-wsabuf)
+[**`WSABUF`**](https://learn.microsoft.com/en-us/windows/win32/api/ws2def/ns-ws2def-wsabuf)
 ```cpp
 #include <ws2def.h>
 // Contains a pointer to a buffer and its length. Used for scatter/gather I/O operations.
@@ -952,7 +953,7 @@ typedef struct sockaddr_in6 {
     u_long         sin6_scope_id;
 } SOCKADDR_IN6, *PSOCKADDR_IN6, *LPSOCKADDR_IN6;
 ```
-[**`IN6_ADDR`**]([IN6_ADDR (in6addr.h) - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/in6addr/ns-in6addr-in6_addr))
+[**`IN6_ADDR`**](https://learn.microsoft.com/en-us/windows/win32/api/in6addr/ns-in6addr-in6_addr)
 ```cpp
 #include <in6addr.h>
 // Represents an IPv6 address.
