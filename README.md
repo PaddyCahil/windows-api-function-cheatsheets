@@ -618,3 +618,344 @@ int iswxdigit(
     wint_t c
 ); // Checks if the wide character is a valid hexadecimal digit.
 ```
+
+### Win32 Structs Cheat Sheet
+[**`SYSTEM_INFO`**](https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info)
+```cpp
+#include <sysinfoapi.h>
+// Contains information about the current computer system, including the architecture and type of the processor, the number of processors, and the page size.
+typedef struct _SYSTEM_INFO {
+    union {
+        DWORD dwOemId;
+        struct {
+            WORD wProcessorArchitecture;
+            WORD wReserved;
+        } DUMMYSTRUCTNAME;
+    } DUMMYUNIONNAME;
+    DWORD dwPageSize;
+    LPVOID lpMinimumApplicationAddress;
+    LPVOID lpMaximumApplicationAddress;
+    DWORD_PTR dwActiveProcessorMask;
+    DWORD dwNumberOfProcessors;
+    DWORD dwProcessorType;
+    DWORD dwAllocationGranularity;
+    WORD wProcessorLevel;
+    WORD wProcessorRevision;
+} SYSTEM_INFO;
+```
+[**`FILETIME`**](https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-filetime)
+```cpp
+#include <minwinbase.h>
+// Represents the number of 100-nanosecond intervals since January 1, 1601 (UTC). Used for file and system time.
+typedef struct _FILETIME {
+    DWORD dwLowDateTime;
+    DWORD dwHighDateTime;
+} FILETIME;
+```
+[**`STARTUPINFO`**](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa)
+```cpp
+#include <processthreadsapi.h>
+// Specifies the window station, desktop, standard handles, and appearance of the main window for a process at creation time.
+typedef struct _STARTUPINFOA {
+    DWORD  cb;
+    LPSTR  lpReserved;
+    LPSTR  lpDesktop;
+    LPSTR  lpTitle;
+    DWORD  dwX;
+    DWORD  dwY;
+    DWORD  dwXSize;
+    DWORD  dwYSize;
+    DWORD  dwXCountChars;
+    DWORD  dwYCountChars;
+    DWORD  dwFillAttribute;
+    DWORD  dwFlags;
+    WORD   wShowWindow;
+    WORD   cbReserved2;
+    LPBYTE lpReserved2;
+    HANDLE hStdInput;
+    HANDLE hStdOutput;
+    HANDLE hStdError;
+} STARTUPINFOA, *LPSTARTUPINFOA;
+```
+[**`PROCESS_INFORMATION`**](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information)
+```cpp
+#include <processthreadsapi.h>
+// Contains information about a newly created process and its primary thread.
+typedef struct _PROCESS_INFORMATION {
+    HANDLE hProcess;
+    HANDLE hThread;
+    DWORD  dwProcessId;
+    DWORD  dwThreadId;
+} PROCESS_INFORMATION, *LPPROCESS_INFORMATION;
+```
+[**`SECURITY_ATTRIBUTES`**](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85))
+```cpp
+// Determines whether the handle can be inherited by child processes and specifies a security descriptor for a new object.
+typedef struct _SECURITY_ATTRIBUTES {
+    DWORD  nLength;
+    LPVOID lpSecurityDescriptor;
+    BOOL   bInheritHandle;
+} SECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
+```
+[**`OVERLAPPED`**](https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-overlapped)
+```cpp
+#inluce <minwinbase.h>
+// Contains information used in asynchronous (also known as overlapped) input and output (I/O) operations.
+typedef struct _OVERLAPPED {
+    ULONG_PTR Internal;
+    ULONG_PTR InternalHigh;
+    union {
+        struct {
+            DWORD Offset;
+            DWORD OffsetHigh;
+        } DUMMYSTRUCTNAME;
+        PVOID Pointer;
+    } DUMMYUNIONNAME;
+    HANDLE hEvent;
+} OVERLAPPED, *LPOVERLAPPED;
+```
+[**`GUID`**](https://docs.microsoft.com/en-us/windows/win32/api/guiddef/ns-guiddef-guid)
+```cpp
+#include <guiddef.h>
+// Represents a globally unique identifier (GUID), used to identify objects, interfaces, and other items.
+typedef struct _GUID {
+    unsigned long  Data1;
+    unsigned short Data2;
+    unsigned short Data3;
+    unsigned char  Data4[8];
+} GUID;
+```
+[**`MEMORY_BASIC_INFORMATION`**](https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-memory_basic_information)
+```cpp
+#include <winnt.h>
+// Contains information about a range of pages in the virtual address space of a process.
+typedef struct _MEMORY_BASIC_INFORMATION {
+    PVOID  BaseAddress;
+    PVOID  AllocationBase;
+    DWORD  AllocationProtect;
+    SIZE_T RegionSize;
+    DWORD  State;
+    DWORD  Protect;
+    DWORD  Type;
+} MEMORY_BASIC_INFORMATION, *PMEMORY_BASIC_INFORMATION;
+```
+[**`SYSTEMTIME`**](https://docs.microsoft.com/en-us/windows/win32/api/minwinbase/ns-minwinbase-systemtime)
+```cpp
+#include <minwinbase.h>
+// Specifies a date and time, using individual members for the month, day, year, weekday, hour, minute, second, and millisecond.
+typedef struct _SYSTEMTIME {
+    WORD wYear;
+    WORD wMonth;
+    WORD wDayOfWeek;
+    WORD wDay;
+    WORD wHour;
+    WORD wMinute;
+    WORD wSecond;
+    WORD wMilliseconds;
+} SYSTEMTIME, *PSYSTEMTIME, *LPSYSTEMTIME;
+```
+[**`COORD`**](https://docs.microsoft.com/en-us/windows/console/coord-str)
+```cpp
+// Defines the coordinates of a character cell in a console screen buffer, where the origin (0,0) is at the top-left corner.
+typedef struct _COORD {
+    SHORT X;
+    SHORT Y;
+} COORD, *PCOORD;
+```
+[**`SMALL_RECT`**](https://docs.microsoft.com/en-us/windows/console/small-rect-str)
+```cpp
+//  Defines the coordinates of the upper left and lower right corners of a rectangle.
+typedef struct _SMALL_RECT {
+    SHORT Left;
+    SHORT Top;
+    SHORT Right;
+    SHORT Bottom;
+} SMALL_RECT;
+```
+[**`CONSOLE_SCREEN_BUFFER_INFO`**](https://docs.microsoft.com/en-us/windows/console/console-screen-buffer-info-str)
+```cpp
+// Contains information about a console screen buffer.
+typedef struct _CONSOLE_SCREEN_BUFFER_INFO {
+    COORD      dwSize;
+    COORD      dwCursorPosition;
+    WORD       wAttributes;
+    SMALL_RECT srWindow;
+    COORD      dwMaximumWindowSize;
+} CONSOLE_SCREEN_BUFFER_INFO, *PCONSOLE_SCREEN_BUFFER_INFO;
+```
+[**`WSADATA`**](https://docs.microsoft.com/en-us/windows/win32/api/winsock/ns-winsock-wsadata)
+```cpp
+#include <winsock.h>
+// Contains information about the Windows Sockets implementation.
+typedef struct WSAData {
+    WORD           wVersion;
+    WORD           wHighVersion;
+    unsigned short iMaxSockets;
+    unsigned short iMaxUdpDg;
+    char FAR       *lpVendorInfo;
+    char           szDescription[WSADESCRIPTION_LEN+1];
+    char           szSystemStatus[WSASYS_STATUS_LEN+1];
+} WSADATA, *LPWSADATA;
+```
+[**`CRITICAL_SECTION`**]([struct RTL_CRITICAL_SECTION (nirsoft.net)](https://www.nirsoft.net/kernel_struct/vista/RTL_CRITICAL_SECTION.html))
+```c++
+// Represents a critical section object, which is used to provide synchronization access to a shared resource.
+typedef struct _RTL_CRITICAL_SECTION {
+    PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
+    LONG LockCount;
+    LONG RecursionCount;
+    HANDLE OwningThread;
+    HANDLE LockSemaphore;
+    ULONG_PTR SpinCount;
+} RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
+```
+[**`WSAPROTOCOL_INFO`**](https://docs.microsoft.com/en-us/windows/win32/api/winsock2/ns-winsock2-wsaprotocol_infoa)
+```c++
+#include <winsock2.h>
+// Contains Windows Sockets protocol information.
+typedef struct _WSAPROTOCOL_INFOA {
+    DWORD          dwServiceFlags1;
+    DWORD          dwServiceFlags2;
+    DWORD          dwServiceFlags3;
+    DWORD          dwServiceFlags4;
+    DWORD          dwProviderFlags;
+    GUID           ProviderId;
+    DWORD          dwCatalogEntryId;
+    WSAPROTOCOLCHAIN ProtocolChain;
+    int            iVersion;
+    int            iAddressFamily;
+    int            iMaxSockAddr;
+    int            iMinSockAddr;
+    int            iSocketType;
+    int            iProtocol;
+    int            iProtocolMaxOffset;
+    int            iNetworkByteOrder;
+    int            iSecurityScheme;
+    DWORD          dwMessageSize;
+    DWORD          dwProviderReserved;
+    CHAR           szProtocol[WSAPROTOCOL_LEN+1];
+} WSAPROTOCOL_INFOA, *LPWSAPROTOCOL_INFOA;
+```
+[**`MSGHDR`**](https://docs.microsoft.com/en-us/windows/win32/api/ws2tcpip/ns-ws2tcpip-_msghdr)
+```c++
+#include <ws2def.h>
+// Contains message information for use with the `sendmsg` and `recvmsg` functions.
+typedef struct _WSAMSG {
+    LPSOCKADDR       name;
+    INT              namelen;
+    LPWSABUF         lpBuffers;
+    ULONG            dwBufferCount;
+    WSABUF           Control;
+    ULONG            dwFlags;
+} WSAMSG, *PWSAMSG, *LPWSAMSG;
+```
+
+### Win32 Sockets Structs Cheat Sheet (winsock.h)
+[**`SOCKADDR`**](https://docs.microsoft.com/en-us/windows/win32/api/winsock/ns-winsock-sockaddr)
+```cpp
+// A generic socket address structure used for compatibility with various address families.
+typedef struct sockaddr {
+    u_short sa_family;
+    char    sa_data[14];
+} SOCKADDR, *PSOCKADDR, *LPSOCKADDR;
+```
+[**`SOCKADDR_IN`**](https://docs.microsoft.com/en-us/windows/win32/api/winsock/ns-winsock-sockaddr_in)
+```cpp
+// Represents an IPv4 socket address, containing the IPv4 address, port number, and address family.
+typedef struct sockaddr_in {
+    short          sin_family;
+    u_short        sin_port;
+    struct in_addr sin_addr;
+    char           sin_zero[8];
+} SOCKADDR_IN, *PSOCKADDR_IN, *LPSOCKADDR_IN;
+```
+[**`LINGER`**](https://docs.microsoft.com/en-us/windows/win32/api/winsock/ns-winsock-linger)
+```cpp
+// Used to set the socket option SO_LINGER, which determines the action taken when unsent data is queued on a socket and a `closesocket` is performed.
+typedef struct linger {
+    u_short l_onoff;
+    u_short l_linger;
+} LINGER, *PLINGER, *LPLINGER;
+```
+[**`TIMEVAL`**](https://docs.microsoft.com/en-us/windows/win32/api/winsock/ns-winsock-timeval)
+```cpp
+// Represents a time interval, used with the `select` function to specify a timeout period.
+typedef struct timeval {
+    long tv_sec;
+    long tv_usec;
+} TIMEVAL, *PTIMEVAL, *LPTIMEVAL;
+```
+[**`FD_SET`**](https://docs.microsoft.com/en-us/windows/win32/api/winsock/ns-winsock-fd_set)
+```cpp
+// Represents a set of sockets used with the `select` function to check for socket events.
+typedef struct fd_set {
+    u_int fd_count;
+    SOCKET fd_array[FD_SETSIZE];
+} fd_set, *Pfd_set, *LPfd_set;
+```
+
+### Win32 Sockets Structs Cheat Sheet (winsock2.h)
+[**`IN_ADDR`**][in_addr (winsock2.h) - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/winsock2/ns-winsock2-in_addr)
+```cpp
+// Represents an IPv4 address.
+typedef struct in_addr {
+    union {
+        struct {
+            u_char s_b1, s_b2, s_b3, s_b4;
+        } S_un_b;
+        struct {
+            u_short s_w1, s_w2;
+        } S_un_w;
+        u_long S_addr;
+    } S_un;
+} IN_ADDR, *PIN_ADDR, *LPIN_ADDR;
+```
+
+### Win32 Sockets Structs Cheat Sheet (ws2def.h)
+[**`ADDRINFO`**](https://learn.microsoft.com/en-us/windows/win32/api/ws2def/ns-ws2def-addrinfow)
+```cpp
+#include <ws2def.h>
+// Contains information about an address for use with the `getaddrinfo` function, and is used to build a linked list of addresses.
+typedef struct addrinfoW {
+    int             ai_flags;
+    int             ai_family;
+    int             ai_socktype;
+    int             ai_protocol;
+    size_t          ai_addrlen;
+    PWSTR           *ai_canonname;
+    struct sockaddr *ai_addr;
+    struct addrinfo *ai_next;
+} ADDRINFOW, *PADDRINFOW;
+```
+[**`WSABUF`**][WSABUF (ws2def.h) - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/ws2def/ns-ws2def-wsabuf)
+```cpp
+#include <ws2def.h>
+// Contains a pointer to a buffer and its length. Used for scatter/gather I/O operations.
+typedef struct _WSABUF {
+    ULONG len;
+    __field_bcount(len) CHAR FAR *buf;
+} WSABUF, FAR * LPWSABUF;
+```
+[**`SOCKADDR_IN6`**](https://docs.microsoft.com/en-us/windows/win32/api/ws2ipdef/ns-ws2ipdef-sockaddr_in6)
+```cpp
+#include <ws2ipdef.h>
+// Represents an IPv6 socket address, containing the IPv6 address, port number, flow info, and address family.
+typedef struct sockaddr_in6 {
+    short          sin6_family;
+    u_short        sin6_port;
+    u_long         sin6_flowinfo;
+    struct in6_addr sin6_addr;
+    u_long         sin6_scope_id;
+} SOCKADDR_IN6, *PSOCKADDR_IN6, *LPSOCKADDR_IN6;
+```
+[**`IN6_ADDR`**]([IN6_ADDR (in6addr.h) - Win32 apps | Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/in6addr/ns-in6addr-in6_addr))
+```cpp
+#include <in6addr.h>
+// Represents an IPv6 address.
+typedef struct in6_addr {
+    union {
+        u_char Byte[16];
+        u_short Word[8];
+    } u;
+} IN6_ADDR, *PIN6_ADDR, *LPIN6_ADDR;
+```
