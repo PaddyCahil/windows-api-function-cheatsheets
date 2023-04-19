@@ -81,11 +81,13 @@ BOOL TerminateProcess(
 ```c
 LPVOID VirtualAlloc(
   LPVOID lpAddress,
-  SIZE_T dwSize,
-  DWORD flAllocationType,
-  DWORD flProtect
+  SIZE_T dwSize,                // Shellcode must be between 0x1 and 0x10000 bytes (page size)
+  DWORD flAllocationType,       // #define MEM_COMMIT 0x00001000
+  DWORD flProtect               // #define PAGE_EXECUTE_READWRITE 0x00000040  
 ); // Reserves, commits, or changes the state of a region of memory within the virtual address space of the calling process.
 ```
+tags: #DEP
+
 [VirtualFree](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfree)
 ```c
 BOOL VirtualFree(
