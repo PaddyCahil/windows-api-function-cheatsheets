@@ -96,6 +96,15 @@ BOOL VirtualFree(
   DWORD dwFreeType
 ); // Releases, decommits, or releases and decommits a region of memory within the virtual address space of the calling process.
 ```
+[VirtualProtect function (memoryapi.h)](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualprotect)
+```c
+BOOL VirtualProtect(
+  LPVOID lpAddress,
+  SIZE_T dwSize,
+  DWORD  flNewProtect,
+  PDWORD lpflOldProtect
+); // Changes the protection on a region of committed pages in the virtual address space of the calling process.
+```
 
 ### Thread Management
 [CreateThread](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread)
