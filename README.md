@@ -1,10 +1,10 @@
-# Windows API Cheatsheet
+<div align="center">
+  <img src="https://github.com/snowcra5h/windows-api-function-cheatsheets/blob/main/API%20CheatSheets.gif" width="300" alt="WINAPI" style="margin-bottom: 10px;">
+  <p>snowcra5h@icloud.com</p>
+  <p><a href="https://twitter.com/snowcra5h" target="_blank" rel="noopener noreferrer">https://twitter.com/snowcra5h</a></p>
+</div>
 
-- snowcra5h@icloud.com
-- https://twitter.com/snowcra5h
-
----
-
+# Windows API Function Calls
 ### File Operations
 [CreateFile](https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea)
 ```c
