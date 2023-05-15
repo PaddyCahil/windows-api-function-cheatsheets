@@ -102,14 +102,13 @@ HANDLE CreateProcess(
   LPCTSTR lpCurrentDirectory,
   LPSTARTUPINFO lpStartupInfo,
   LPPROCESS_INFORMATION lpProcessInformation
-); // Creates a new process.
+); // The CreateProcess function creates a new process that runs independently of the creating process. For simplicity, this relationship is called a parent-child relationship.
 ```
-[WaitForSingleObject](https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject)
 ```c
-DWORD WaitForSingleObject(
-  HANDLE hHandle,
-  DWORD dwMilliseconds
-); // Waits for the specified object to become signaled.
+// Start the child process
+// No module name (use command line), Command line, Process handle not inheritable, Thread handle not inheritable, Set handle inheritance to FALSE, No creation flags, Use parent's environment block, Use parent's starting directory, Pointer to STARTUPINFO structure, Pointer to PROCESS_INFORMATION structure
+CreateProcess( NULL, argv[1], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi); 
+```
 ```
 [TerminateProcess](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess)
 ```c
@@ -150,7 +149,7 @@ BOOL WriteProcessMemory(
 ); // Writes data to an area of memory in a specified process. The entire area to be written to must be accessible or the operation fails.
 ```
 ```c
-WriteProcessMemory(hProc, pRemoteCode, (PVOID)payload, (SIZE_T)payload_len, (SIZE_T *)NULL);
+WriteProcessMemory(hProc, pRemoteCode, (PVOID)payload, (SIZE_T)payload_len, (SIZE_T *)NULL); // pRemoteCode from VirtualAllocEx
 ```
 ### Memory Management
 [VirtualAlloc](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc)
@@ -204,6 +203,21 @@ HANDLE CreateThread(
   DWORD dwCreationFlags,
   LPDWORD lpThreadId
 ); // Creates a thread to execute within the virtual address space of the calling process.
+```
+[CreateRemoteThread](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread)
+```c
+HANDLE CreateRemoteThread(
+  [in]  HANDLE                 hProcess,
+  [in]  LPSECURITY_ATTRIBUTES  lpThreadAttributes,
+  [in]  SIZE_T                 dwStackSize,
+  [in]  LPTHREAD_START_ROUTINE lpStartAddress,
+  [in]  LPVOID                 lpParameter,
+  [in]  DWORD                  dwCreationFlags,
+  [out] LPDWORD                lpThreadId
+); // Creates a thread that runs in the virtual address space of another process.
+```
+```c
+hThread = CreateRemoteThread(hProc, NULL, 0, pRemoteCode, NULL, 0, NULL); // pRemoteCode from VirtualAllocEx filled by WriteProcessMemory
 ```
 [ExitThread](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitthread)
 ```c
@@ -296,6 +310,16 @@ BOOL ReleaseSemaphore(
   LONG lReleaseCount,
   LPLONG lpPreviousCount
 ); // Increases the count of the specified semaphore object by a specified amount.
+```
+[WaitForSingleObject](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject)
+```c
+DWORD WaitForSingleObject(
+  [in] HANDLE hHandle,
+  [in] DWORD  dwMilliseconds
+); // Waits until the specified object is in the signaled state or the time-out interval elapses.
+```
+```c
+WaitForSingleObject(hThread, 500);
 ```
 
 ### Interprocess Communication
