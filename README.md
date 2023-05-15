@@ -725,6 +725,23 @@ typedef struct _PROCESS_INFORMATION {
     DWORD  dwThreadId;
 } PROCESS_INFORMATION, *LPPROCESS_INFORMATION;
 ```
+[**`PROCESSENTRY32`**](https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-processentry32)
+```c
+#include <tlhelp32.h>
+typedef struct tagPROCESSENTRY32 {
+  DWORD     dwSize;
+  DWORD     cntUsage;
+  DWORD     th32ProcessID;
+  ULONG_PTR th32DefaultHeapID;
+  DWORD     th32ModuleID;
+  DWORD     cntThreads;
+  DWORD     th32ParentProcessID;
+  LONG      pcPriClassBase;
+  DWORD     dwFlags;
+  CHAR      szExeFile[MAX_PATH];
+} PROCESSENTRY32;
+```
+
 [**`SECURITY_ATTRIBUTES`**](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa379560(v=vs.85))
 ```cpp
 // Determines whether the handle can be inherited by child processes and specifies a security descriptor for a new object.
