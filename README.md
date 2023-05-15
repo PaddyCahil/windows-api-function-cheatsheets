@@ -46,6 +46,17 @@ BOOL CloseHandle(
 ```
 
 ### Process Management
+[OpenProcess](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocess)
+```c
+HANDLE OpenProcess(
+  [in] DWORD dwDesiredAccess,
+  [in] BOOL  bInheritHandle,
+  [in] DWORD dwProcessId
+); // Opens an existing local process object. e.g., try to open target process
+```
+```c
+hProc = OpenProcess( PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, FALSE, (DWORD) pid);
+```
 [CreateProcess](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa)
 ```c
 HANDLE CreateProcess(
