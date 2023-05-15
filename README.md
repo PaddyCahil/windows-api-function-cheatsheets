@@ -4,8 +4,40 @@
   <p><a href="https://twitter.com/snowcra5h" target="_blank" rel="noopener noreferrer">https://twitter.com/snowcra5h</a></p>
 </div>
 
-# Windows API Function Calls
-### File Operations
+<div align="center">
+  
+# Windows API Function Cheatsheets
+  
+ </div>
+
+## Table of Contents
+
+- [Windows API Function Calls](#windows-api-function-calls)
+  - [File Operations](#file-operations)
+  - [Process Management](#process-management)
+  - [Memory Management](#memory-management)
+  - [Thread Management](#thread-management)
+  - [Dynamic-Link Library (DLL) Management](#dynamic-link-library-dll-management)
+  - [Synchronization](#synchronization)
+  - [Interprocess Communication](#interprocess-communication)
+  - [Winsock Cheat Sheet](#winsock-cheat-sheet)
+  - [Registry Operations](#registry-operations)
+  - [Error Handling](#error-handling)
+- [Unicode String Functions](#unicode-string-functions)
+  - [String Length](#string-length)
+  - [String Copy](#string-copy)
+  - [String Concatenation](#string-concatenation)
+  - [String Comparison](#string-comparison)
+  - [String Search](#string-search)
+  - [Character Classification and Conversion](#character-classification-and-conversion)
+- [Win32 Structs Cheat Sheet](#win32-structs-cheat-sheet)
+  - [Common Structs](#common-structs)
+  - [Win32 Sockets Structs Cheat Sheet (winsock.h)](#win32-sockets-structs-cheat-sheet-winsockh)
+  - [Win32 Sockets Structs Cheat Sheet (winsock2.h)](#win32-sockets-structs-cheat-sheet-winsock2h)
+  - [Win32 Sockets Structs Cheat Sheet (ws2def.h)](#win32-sockets-structs-cheat-sheet-ws2defh)
+
+## Windows API Function Calls
+## File Operations
 [CreateFile](https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea)
 ```c
 HANDLE CreateFile(
