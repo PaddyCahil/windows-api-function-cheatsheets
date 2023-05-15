@@ -75,6 +75,27 @@ BOOL TerminateProcess(
   UINT uExitCode
 ); // Terminates the specified process.
 ```
+[CreateToolhelp32Snapshot](https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-createtoolhelp32snapshot)
+```c
+HANDLE CreateToolhelp32Snapshot(
+  [in] DWORD dwFlags,
+  [in] DWORD th32ProcessID
+); // used to obtain information about processes and threads running on a Windows system.
+```
+[Process32First](https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32first)
+```c
+BOOL Process32First(
+  [in]      HANDLE           hSnapshot,
+  [in, out] LPPROCESSENTRY32 lppe
+); // used to retrieve information about the first process encountered in a system snapshot, which is typically taken using the CreateToolhelp32Snapshot function.
+```
+[Process32Next](https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/nf-tlhelp32-process32next)
+```c
+BOOL Process32Next(
+  [in]  HANDLE           hSnapshot,
+  [out] LPPROCESSENTRY32 lppe
+); // used to retrieve information about the next process in a system snapshot after Process32First has been called. This function is typically used in a loop to enumerate all processes captured in a snapshot taken using the CreateToolhelp32Snapshot function.
+```
 
 ### Memory Management
 [VirtualAlloc](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc)
