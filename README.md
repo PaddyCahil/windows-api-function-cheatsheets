@@ -107,7 +107,19 @@ BOOL Process32Next(
   [out] LPPROCESSENTRY32 lppe
 ); // used to retrieve information about the next process in a system snapshot after Process32First has been called. This function is typically used in a loop to enumerate all processes captured in a snapshot taken using the CreateToolhelp32Snapshot function.
 ```
-
+[WriteProcessMemory](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory)
+```c
+BOOL WriteProcessMemory(
+  [in]  HANDLE  hProcess,
+  [in]  LPVOID  lpBaseAddress,
+  [in]  LPCVOID lpBuffer,
+  [in]  SIZE_T  nSize,
+  [out] SIZE_T  *lpNumberOfBytesWritten
+); // Writes data to an area of memory in a specified process. The entire area to be written to must be accessible or the operation fails.
+```
+```c
+WriteProcessMemory(hProc, pRemoteCode, (PVOID)payload, (SIZE_T)payload_len, (SIZE_T *)NULL);
+```
 ### Memory Management
 [VirtualAlloc](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc)
 ```c
@@ -118,8 +130,19 @@ LPVOID VirtualAlloc(
   DWORD flProtect               // #define PAGE_EXECUTE_READWRITE 0x00000040  
 ); // Reserves, commits, or changes the state of a region of memory within the virtual address space of the calling process.
 ```
-tags: #DEP
-
+[VirtualAllocEx](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualallocex)
+```c
+LPVOID VirtualAllocEx(
+  [in]           HANDLE hProcess,
+  [in, optional] LPVOID lpAddress,
+  [in]           SIZE_T dwSize,
+  [in]           DWORD  flAllocationType,
+  [in]           DWORD  flProtect
+); // Reserves, commits, or changes the state of a region of memory within the virtual address space of a specified process. The function initializes the memory it allocates to zero.
+```
+```c
+pRemoteCode = VirtualAllocEx(hProc, NULL, payload_len, MEM_COMMIT, PAGE_EXECUTE_READ);
+```
 [VirtualFree](https://docs.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfree)
 ```c
 BOOL VirtualFree(
