@@ -114,7 +114,6 @@ HANDLE CreateProcess(
 // No module name (use command line), Command line, Process handle not inheritable, Thread handle not inheritable, Set handle inheritance to FALSE, No creation flags, Use parent's environment block, Use parent's starting directory, Pointer to STARTUPINFO structure, Pointer to PROCESS_INFORMATION structure
 CreateProcess( NULL, argv[1], NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi); 
 ```
-```
 [TerminateProcess](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess)
 ```c
 BOOL TerminateProcess(
