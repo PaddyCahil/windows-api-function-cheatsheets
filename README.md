@@ -195,6 +195,14 @@ BOOL VirtualProtect(
   PDWORD lpflOldProtect
 ); // Changes the protection on a region of committed pages in the virtual address space of the calling process.
 ```
+[RtlMoveMemory](https://learn.microsoft.com/en-us/windows/win32/devnotes/rtlmovememory)
+```c
+VOID RtlMoveMemory(
+  _Out_       VOID UNALIGNED *Destination,
+  _In_  const VOID UNALIGNED *Source,
+  _In_        SIZE_T         Length
+); // Copies the contents of a source memory block to a destination memory block, and supports overlapping source and destination memory blocks.
+```
 
 ### Thread Management
 [CreateThread](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread)
