@@ -14,32 +14,35 @@
 
 ## Table of Contents
 
-- [Windows API Function Calls](#windows-api-function-calls)
-  - [File Operations](#file-operations)
-  - [Process Management](#process-management)
-  - [Memory Management](#memory-management)
-  - [Thread Management](#thread-management)
-  - [Dynamic-Link Library (DLL) Management](#dynamic-link-library-dll-management)
-  - [Synchronization](#synchronization)
-  - [Interprocess Communication](#interprocess-communication)
-  - [Winsock Cheat Sheet](#winsock-cheat-sheet)
-  - [Registry Operations](#registry-operations)
-  - [Error Handling](#error-handling)
-- [Unicode String Functions](#unicode-string-functions)
-  - [String Length](#string-length)
-  - [String Copy](#string-copy)
-  - [String Concatenation](#string-concatenation)
-  - [String Comparison](#string-comparison)
-  - [String Search](#string-search)
-  - [Character Classification and Conversion](#character-classification-and-conversion)
-- [Win32 Structs Cheat Sheet](#win32-structs-cheat-sheet)
-  - [Common Structs](#common-structs)
-  - [Win32 Sockets Structs Cheat Sheet (winsock.h)](#win32-sockets-structs-cheat-sheet-winsockh)
-  - [Win32 Sockets Structs Cheat Sheet (winsock2.h)](#win32-sockets-structs-cheat-sheet-winsock2h)
-  - [Win32 Sockets Structs Cheat Sheet (ws2def.h)](#win32-sockets-structs-cheat-sheet-ws2defh)
+- [Windows API Function Cheatsheets](#windows-api-function-cheatsheets)
+    - [File Operations](#file-operations)
+    - [Process Management](#process-management)
+    - [Memory Management](#memory-management)
+    - [Thread Management](#thread-management)
+    - [Dynamic-Link Library (DLL) Management](#dynamic-link-library-dll-management)
+    - [Synchronization](#synchronization)
+    - [Interprocess Communication](#interprocess-communication)
+    - [Windows Hooks](#windows-hooks)
+    - [Cryptography](#cryptography)
+    - [Debugging](#debugging)
+    - [Winsock Cheat Sheet](#winsock-cheat-sheet)
+    - [Registry Operations](#registry-operations)
+    - [Error Handling](#error-handling)
+  - [Unicode String Functions](#unicode-string-functions)
+    - [String Length](#string-length)
+    - [String Copy](#string-copy)
+    - [String Concatenation](#string-concatenation)
+    - [String Comparison](#string-comparison)
+    - [String Search](#string-search)
+    - [Character Classification and Conversion](#character-classification-and-conversion)
+  - [Win32 Structs Cheat Sheet](#win32-structs-cheat-sheet)
+    - [Common Structs](#common-structs)
+    - [Win32 Sockets Structs Cheat Sheet (winsock.h)](#win32-sockets-structs-cheat-sheet-winsockh)
+    - [Win32 Sockets Structs Cheat Sheet (winsock2.h)](#win32-sockets-structs-cheat-sheet-winsock2h)
+    - [Win32 Sockets Structs Cheat Sheet (ws2def.h)](#win32-sockets-structs-cheat-sheet-ws2defh)
 
 ## Windows API Function Calls
-## File Operations
+### File Operations
 [CreateFile](https://docs.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea)
 ```c
 HANDLE CreateFile(
@@ -394,6 +397,127 @@ BOOL CloseHandle(
 ); // Closes an open handle.
 ```
 
+### Windows Hooks
+[SetWindowsHookExA](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexa)
+```c
+HHOOK SetWindowsHookExA(
+  [in] int       idHook,
+  [in] HOOKPROC  lpfn,
+  [in] HINSTANCE hmod,
+  [in] DWORD     dwThreadId
+); // Installs an application-defined hook procedure into a hook chain. You would install a hook procedure to monitor the system for certain types of events. These events are associated either with a specific thread or with all threads in the same desktop as the calling thread.
+```
+[CallNextHookEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-callnexthookex)
+```c
+LRESULT CallNextHookEx(
+  [in, optional] HHOOK  hhk,
+  [in]           int    nCode,
+  [in]           WPARAM wParam,
+  [in]           LPARAM lParam
+); // Passes the hook information to the next hook procedure in the current hook chain. A hook procedure can call this function either before or after processing the hook information.
+```
+[UnhookWindowsHookEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unhookwindowshookex)
+```c
+BOOL UnhookWindowsHookEx(
+  [in] HHOOK hhk
+); // Removes a hook procedure installed in a hook chain by the SetWindowsHookEx function.
+```
+[GetAsyncKeyState](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getasynckeystate)
+```c
+SHORT GetAsyncKeyState(
+  [in] int vKey
+); // Determines whether a key is up or down at the time the function is called, and whether the key was pressed after a previous call to GetAsyncKeyState.
+```
+[GetKeyState](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getkeystate)
+```c
+SHORT GetKeyState(
+  [in] int nVirtKey
+); // Retrieves the status of the specified virtual key. The status specifies whether the key is up, down, or toggled (on, off—alternating each time the key is pressed).
+```
+[GetKeyboardState](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getkeyboardstate)
+```c
+BOOL GetKeyboardState(
+  [out] PBYTE lpKeyState
+); // Copies the status of the 256 virtual keys to the specified buffer.
+```
+
+### Cryptography
+[CryptBinaryToStringA](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptbinarytostringa)
+```c
+BOOL CryptBinaryToStringA(
+  [in]            const BYTE *pbBinary,
+  [in]            DWORD      cbBinary,
+  [in]            DWORD      dwFlags,
+  [out, optional] LPSTR      pszString,
+  [in, out]       DWORD      *pcchString
+); // The CryptBinaryToString function converts an array of bytes into a formatted string.
+```
+[CryptDecrypt](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptdecrypt)
+```c
+BOOL CryptDecrypt(
+  [in]      HCRYPTKEY  hKey,
+  [in]      HCRYPTHASH hHash,
+  [in]      BOOL       Final,
+  [in]      DWORD      dwFlags,
+  [in, out] BYTE       *pbData,
+  [in, out] DWORD      *pdwDataLen
+); // The CryptDecrypt function decrypts data previously encrypted by using the CryptEncrypt function.
+```
+[CryptEncrypt](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptencrypt)
+```c
+BOOL CryptEncrypt(
+  [in]      HCRYPTKEY  hKey,
+  [in]      HCRYPTHASH hHash,
+  [in]      BOOL       Final,
+  [in]      DWORD      dwFlags,
+  [in, out] BYTE       *pbData,
+  [in, out] DWORD      *pdwDataLen,
+  [in]      DWORD      dwBufLen
+); // The CryptEncrypt function encrypts data. The algorithm used to encrypt the data is designated by the key held by the CSP module and is referenced by the hKey parameter.
+```
+[CryptDecryptMessage](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptdecryptmessage)
+```c
+BOOL CryptDecryptMessage(
+  [in]                PCRYPT_DECRYPT_MESSAGE_PARA pDecryptPara,
+  [in]                const BYTE                  *pbEncryptedBlob,
+  [in]                DWORD                       cbEncryptedBlob,
+  [out, optional]     BYTE                        *pbDecrypted,
+  [in, out, optional] DWORD                       *pcbDecrypted,
+  [out, optional]     PCCERT_CONTEXT              *ppXchgCert
+); // The CryptDecryptMessage function decodes and decrypts a message.
+```
+[CryptEncryptMessage]()
+```c
+BOOL CryptEncryptMessage(
+  [in]      PCRYPT_ENCRYPT_MESSAGE_PARA pEncryptPara,
+  [in]      DWORD                       cRecipientCert,
+  [in]      PCCERT_CONTEXT []           rgpRecipientCert,
+  [in]      const BYTE                  *pbToBeEncrypted,
+  [in]      DWORD                       cbToBeEncrypted,
+  [out]     BYTE                        *pbEncryptedBlob,
+  [in, out] DWORD                       *pcbEncryptedBlob
+); // The CryptEncryptMessage function encrypts and encodes a message.
+```
+
+### Debugging
+[IsDebuggerPresent](https://learn.microsoft.com/en-us/windows/win32/api/debugapi/nf-debugapi-isdebuggerpresent)
+```c
+BOOL IsDebuggerPresent(); // Determines whether the calling process is being debugged by a user-mode debugger.
+```
+[CheckRemoteDebuggerPresent](https://learn.microsoft.com/en-us/windows/win32/api/debugapi/nf-debugapi-checkremotedebuggerpresent)
+```c
+BOOL CheckRemoteDebuggerPresent(
+  [in]      HANDLE hProcess,
+  [in, out] PBOOL  pbDebuggerPresent
+); // Determines whether the specified process is being debugged.
+```
+[OutputDebugStringA](https://learn.microsoft.com/en-us/windows/win32/api/debugapi/nf-debugapi-outputdebugstringa)
+```c
+void OutputDebugStringA(
+  [in, optional] LPCSTR lpOutputString
+); // Sends a string to the debugger for display.
+```
+
 ### Winsock Cheat Sheet
 [WSAStartup](https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-wsastartup)
 ```c
@@ -510,6 +634,53 @@ LONG RegSetValueEx(
 LONG RegCloseKey(
     HKEY hKey
 ); // Closes a handle to the specified registry key.
+```
+[RegCreateKeyExA](https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeyexa)
+```c
+LSTATUS RegCreateKeyExA(
+  [in]            HKEY                        hKey,
+  [in]            LPCSTR                      lpSubKey,
+                  DWORD                       Reserved,
+  [in, optional]  LPSTR                       lpClass,
+  [in]            DWORD                       dwOptions,
+  [in]            REGSAM                      samDesired,
+  [in, optional]  const LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+  [out]           PHKEY                       phkResult,
+  [out, optional] LPDWORD                     lpdwDisposition
+); // Creates the specified registry key. If the key already exists, the function opens it. Note that key names are not case sensitive. 
+```
+[RegSetValueExA](https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetvalueexa)
+```c
+LSTATUS RegSetValueExA(
+  [in]           HKEY       hKey,
+  [in, optional] LPCSTR     lpValueName,
+                 DWORD      Reserved,
+  [in]           DWORD      dwType,
+  [in]           const BYTE *lpData,
+  [in]           DWORD      cbData
+); // Sets the data and type of a specified value under a registry key.
+```
+[RegCreateKeyA](https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regcreatekeya)
+```c
+LSTATUS RegCreateKeyA(
+  [in]           HKEY   hKey,
+  [in, optional] LPCSTR lpSubKey,
+  [out]          PHKEY  phkResult
+); // Creates the specified registry key. If the key already exists in the registry, the function opens it.
+```
+[RegDeleteKeyA](https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regdeletekeya)
+```c
+LSTATUS RegDeleteKeyA(
+  [in] HKEY   hKey,
+  [in] LPCSTR lpSubKey
+); // Deletes a subkey and its values. Note that key names are not case sensitive.
+```
+[NtRenameKey](https://learn.microsoft.com/en-us/windows/win32/api/winternl/nf-winternl-ntrenamekey)
+```c
+__kernel_entry NTSTATUS NtRenameKey(
+  [in] HANDLE          KeyHandle,
+  [in] PUNICODE_STRING NewName
+); // Changes the name of the specified registry key.
 ```
 
 ### Error Handling
