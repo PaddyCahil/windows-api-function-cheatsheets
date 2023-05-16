@@ -25,7 +25,7 @@
     - [Windows Hooks](#windows-hooks)
     - [Cryptography](#cryptography)
     - [Debugging](#debugging)
-    - [Winsock Cheat Sheet](#winsock-cheat-sheet)
+    - [Winsock](#winsock)
     - [Registry Operations](#registry-operations)
     - [Error Handling](#error-handling)
   - [Unicode String Functions](#unicode-string-functions)
@@ -518,7 +518,7 @@ void OutputDebugStringA(
 ); // Sends a string to the debugger for display.
 ```
 
-### Winsock Cheat Sheet
+### Winsock
 [WSAStartup](https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-wsastartup)
 ```c
 int WSAStartup(
