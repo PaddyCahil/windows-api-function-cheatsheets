@@ -208,18 +208,17 @@ VOID RtlMoveMemory(
 [CreateThread](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread)
 ```c
 HANDLE CreateThread(
-  [in, optional]  LPSECURITY_ATTRIBUTES   lpThreadAttributes,
-  [in]            SIZE_T                  dwStackSize,
-  [in]            LPTHREAD_START_ROUTINE  lpStartAddress,
-  [in, optional]  __drv_aliasesMem LPVOID lpParameter,
-  [in]            DWORD                   dwCreationFlags,
-  [out, optional] LPDWORD                 lpThreadId
+  [in, optional]  LPSECURITY_ATTRIBUTES   lpThreadAttributes,         // A pointer to a SECURITY_ATTRIBUTES structure that specifies a security descriptor for the new thread and determines whether child processes can inherit the returned handle.
+  [in]            SIZE_T                  dwStackSize,                // The initial size of the stack, in bytes.
+  [in]            LPTHREAD_START_ROUTINE  lpStartAddress,             // A pointer to the application-defined function of type LPTHREAD_START_ROUTINE
+  [in, optional]  __drv_aliasesMem LPVOID lpParameter,                // A pointer to a variable to be passed to the thread function.
+  [in]            DWORD                   dwCreationFlags,            // The flags that control the creation of the thread.
+  [out, optional] LPDWORD                 lpThreadId                  // A pointer to a variable that receives the thread identifier. If this parameter is NULL, the thread identifier is not returned.
 ); // Creates a thread to execute within the virtual address space of the calling process.
 ```
 ```c
 th = CreateThread(0, 0, (LPTHREAD_START_ROUTINE) exec_mem, 0, 0, 0); WaitForSingleObject(th, 0);
 ```
-
 [CreateRemoteThread](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread)
 ```c
 HANDLE CreateRemoteThread(
@@ -288,6 +287,10 @@ FARPROC GetProcAddress(
   LPCSTR lpProcName
 ); // Retrieves the address of an exported function or variable from the specified DLL.
 ```
+```c
+pLoadLibrary = (PTHREAD_START_ROUTINE) GetProcAddress(GetModuleHandle("Kernel32.dll"), "LoadLibraryA");
+```
+
 [FreeLibrary](https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-freelibrary)
 ```c
 BOOL FreeLibrary(
