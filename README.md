@@ -28,6 +28,7 @@
     - [Winsock](#winsock)
     - [Registry Operations](#registry-operations)
     - [Error Handling](#error-handling)
+    - [Resource Management](#resource-management)
   - [Unicode String Functions](#unicode-string-functions)
     - [String Length](#string-length)
     - [String Copy](#string-copy)
@@ -769,6 +770,48 @@ DWORD WSAWaitForMultipleEvents(
 ); // Waits for multiple event objects and returns when the specified events are signaled or the time-out interval elapses.
 ```
 
+### Resource Management
+
+[FindResource](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-findresourcea)
+```c
+HRSRC FindResource(
+  [in, optional] HMODULE hModule,   // A handle to the module whose portable executable file or an accompanying MUI file contains the resource. If this parameter is NULL, the function searches the module used to create the current process.
+  [in]           LPCSTR  lpName,    // The name of the resource.
+  [in]           LPCSTR  lpType     // The resource type.
+); // Determines the location of a resource with the specified type and name in the specified module.
+```c
+HRSRC res = FindResource(NULL, MAKEINTRESOURCE(FAVICON_ICO), RT_RCDATA);
+```
+```
+[LoadResource](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource)
+```c
+HGLOBAL LoadResource(
+  [in, optional] HMODULE hModule,    // A handle to the module whose executable file contains the resource. 
+  [in]           HRSRC   hResInfo    // A handle to the resource to be loaded.
+); // Retrieves a handle that can be used to obtain a pointer to the first byte of the specified resource in memory.
+```
+```c
+HGLOBAL resHandle = resHandle = LoadResource(NULL, res);
+```
+[LockResource](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-lockresource)
+```c
+LPVOID LockResource(
+  [in] HGLOBAL hResData    // A handle to the resource to be accessed
+); // Retrieves a pointer to the specified resource in memory.
+```
+```c
+unsigned char * payload = (char *) LockResource(resHandle);
+```
+[SizeofResource](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-sizeofresource)
+```c
+DWORD SizeofResource(
+  [in, optional] HMODULE hModule,    // A handle to the module whose executable file contains the resource
+  [in]           HRSRC   hResInfo    // A handle to the resource. This handle must be created by using FindResource
+); // Retrieves the size, in bytes, of the specified resource.
+```
+```c
+unsigned int payload_len = SizeofResource(NULL, res);
+```
 ---
 
 ## Unicode String Functions
