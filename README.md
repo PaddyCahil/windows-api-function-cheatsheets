@@ -771,7 +771,6 @@ DWORD WSAWaitForMultipleEvents(
 ```
 
 ### Resource Management
-
 [FindResource](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-findresourcea)
 ```c
 HRSRC FindResource(
@@ -779,9 +778,9 @@ HRSRC FindResource(
   [in]           LPCSTR  lpName,    // The name of the resource.
   [in]           LPCSTR  lpType     // The resource type.
 ); // Determines the location of a resource with the specified type and name in the specified module.
+```
 ```c
 HRSRC res = FindResource(NULL, MAKEINTRESOURCE(FAVICON_ICO), RT_RCDATA);
-```
 ```
 [LoadResource](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadresource)
 ```c
