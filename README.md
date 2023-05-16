@@ -9,7 +9,7 @@
 <div align="center">
   
 # Windows API Function Cheatsheets
-  
+
  </div>
 
 ## Table of Contents
@@ -208,14 +208,18 @@ VOID RtlMoveMemory(
 [CreateThread](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread)
 ```c
 HANDLE CreateThread(
-  LPSECURITY_ATTRIBUTES lpThreadAttributes,
-  SIZE_T dwStackSize,
-  LPTHREAD_START_ROUTINE lpStartAddress,
-  LPVOID lpParameter,
-  DWORD dwCreationFlags,
-  LPDWORD lpThreadId
+  [in, optional]  LPSECURITY_ATTRIBUTES   lpThreadAttributes,
+  [in]            SIZE_T                  dwStackSize,
+  [in]            LPTHREAD_START_ROUTINE  lpStartAddress,
+  [in, optional]  __drv_aliasesMem LPVOID lpParameter,
+  [in]            DWORD                   dwCreationFlags,
+  [out, optional] LPDWORD                 lpThreadId
 ); // Creates a thread to execute within the virtual address space of the calling process.
 ```
+```c
+th = CreateThread(0, 0, (LPTHREAD_START_ROUTINE) exec_mem, 0, 0, 0); WaitForSingleObject(th, 0);
+```
+
 [CreateRemoteThread](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createremotethread)
 ```c
 HANDLE CreateRemoteThread(
