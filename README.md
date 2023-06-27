@@ -1,15 +1,16 @@
 <div align="center">
   
   ![API CheatSheets](https://github.com/snowcra5h/windows-api-function-cheatsheets/assets/90065760/f20d276b-68be-481f-a17e-5c6fa4960331)
-  
-  <p>snowcra5h@icloud.com</p>
-  <p><a href="https://twitter.com/snowcra5h" target="_blank" rel="noopener noreferrer">https://twitter.com/snowcra5h</a></p>
+
 </div>
 
 <div align="center">
   
 # Windows API Function Cheatsheets
+<h3>Contact Us</h3>
 
+🌨️ Snowcrash: [snowcra5h@icloud.com](mailto:snowcra5h@icloud.com)
+🕵️‍♂️ Plackyhacker: [Plackyhacker@proton.me](mailto:Plackyhacker@proton.me)
  </div>
 
 ## Table of Contents
