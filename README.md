@@ -332,6 +332,17 @@ HMODULE LoadLibrary(
   LPCTSTR lpFileName
 ); // Loads a dynamic-link library (DLL) module into the address space of the calling process.
 ```
+[LoadLibraryExA](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryexa)
+```c
+HMODULE LoadLibraryExA(
+  [in] LPCSTR lpLibFileName,
+       HANDLE hFile,
+  [in] DWORD  dwFlags
+); // Loads the specified module into the address space of the calling process, with additional options.
+```
+```c
+HMODULE hModule = LoadLibraryExA("ws2_32.dll", NULL, LOAD_LIBRARY_SAFE_CURRENT_DIRS);
+```
 [GetProcAddress](https://docs.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getprocaddress)
 ```c
 FARPROC GetProcAddress(
